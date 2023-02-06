@@ -1,24 +1,24 @@
-import {Column, Entity, PrimaryColumn} from 'typeorm';
-import {BaseModel} from "./base.entity";
+import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { BaseModel } from './base.entity';
 
 @Entity({
-    name: 'city',
+	name: 'city'
 })
 export class CityEntity extends BaseModel {
-    @PrimaryColumn({
-        type: 'int',
-    })
-    city_id: number;
+	@PrimaryColumn({
+		type: 'int'
+	})
+	city_id: number;
 
-    @Column({
-        type: 'int',
-        default: 0,
-    })
-    country_id: number;
+	@Column({
+		type: 'int',
+		default: 0
+	})
+	country_id: number;
 
-    @Column({
-        type: 'text',
-        default: '',
-    })
-    name: string;
+	@Column({
+		type: 'text',
+		default: ''
+	})
+	name: string;
 }

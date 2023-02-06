@@ -1,13 +1,14 @@
-import {Controller, Get, Query} from '@nestjs/common';
-import {CrawlerService} from './crawler.service';
+import { Controller, Get, Query } from '@nestjs/common';
+import { CrawlerService } from './crawler.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Craw - API')
 @Controller('crawler')
 export class CrawlerController {
-  constructor(
-      private readonly crawlerService: CrawlerService) {}
+	constructor(private readonly crawlerService: CrawlerService) {}
 
-  @Get('')
-  async getCraw(@Query() q: any) {
-    return this.crawlerService.getCraw(q.stock_exchanges);
-  }
+	@Get('')
+	async getCraw(@Query() q: any) {
+		return this.crawlerService.getCraw(q.stock_exchanges);
+	}
 }
