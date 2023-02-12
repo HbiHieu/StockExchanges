@@ -20,7 +20,8 @@ export class GenerateVolatilityQuery {
     @IsNumberString({}, {message: 'start_time not found'})
     @ApiProperty({
         type: Number,
-        example: '1420045200000 - 01-01-2015 00:00:00'
+        example: 1420045200000,
+        description: 'DateTime number => 01-01-2015 00:00:00'
     })
     start_time: string
 
