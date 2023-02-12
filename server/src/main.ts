@@ -7,11 +7,13 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ExceptionResponse } from './utils/utils.exception';
 import { UtilCommonTemplate } from './utils/utils.common';
 import { ValidationFilter } from './filters/validation.filter';
+import {HttpLogger} from "./interceptors/http-logger";
 
 async function bootstrap() {
 	const logger = new Logger('AppLogger');
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, { bodyParser: true });
 	app.setGlobalPrefix(process.env.API_PREFIX);
+	app.useGlobalInterceptors(new HttpLogger())
 
 	const config = new DocumentBuilder()
 		.addBearerAuth()
@@ -28,7 +30,7 @@ async function bootstrap() {
 		new ValidationPipe({
 			transform: true,
 			exceptionFactory(errors: ValidationError[]) {
-				logger.error(errors);
+				// logger.error(errors);
 				return new ExceptionResponse(HttpStatus.BAD_REQUEST, UtilCommonTemplate.getMessageValidator(errors));
 			}
 		})

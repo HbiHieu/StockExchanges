@@ -38,6 +38,36 @@ export class CrawlerService {
 		});
 	}
 
+	generateStockData(initial_price: number, start_time: number, num_prices: number) {
+		const prices = [];
+		let previousPrice = initial_price;
+		let currentTime = start_time;
+		let endTime;
+		let openPrice = previousPrice;
+		let closePrice;
+		for (let i = 0; i < num_prices; i++) {
+			let randomChange = Math.round((Math.random() * 2 - 1) * previousPrice * 0.03);
+			let price = previousPrice + randomChange;
+			closePrice = price;
+			let highestPrice = Math.round(Math.min(openPrice * 1.03, price + (price - openPrice) * Math.random()));
+			let lowestPrice = Math.round(Math.max(openPrice * 0.97, price - (price - openPrice) * Math.random()));
+			endTime = currentTime + (12 * 60 * 60 * 1000);
+			prices.push({
+				open_price: openPrice,
+				close_price: closePrice,
+				highest_price: highestPrice,
+				lowest_price: lowestPrice,
+				start_time: currentTime,
+				end_time: endTime
+			});
+			previousPrice = price;
+			openPrice = price;
+			currentTime = endTime + (12 * 60 * 60 * 1000);
+		}
+		return prices;
+	}
+
+
 	async getCraw(stock_exchanges: string): Promise<any> {
 		try {
 			await this.page.goto(`https://trade.vndirect.com.vn/chung-khoan/${stock_exchanges}`, {
@@ -101,5 +131,38 @@ export class CrawlerService {
 		} catch (e) {
 			throw new CatchException(e);
 		}
+	}
+
+	async generateStockOscillation(symbol: string, initial_price: number, start_time: number, num_prices: number) : Promise<any> {
+		return {
+			meta: {
+				company_name: 'Công ty ABC',
+				symbol,
+			},
+			detailed_data: this.generateStockData(initial_price, start_time, num_prices)
+		}
+	}
+
+	async crawData(stock_exchanges: string): Promise<any> {
+		try {
+			await this.page.goto(`https://trade.vndirect.com.vn/chung-khoan/${stock_exchanges}`, {
+				waitUntil: 'networkidle2'
+			});
+			const html = await this.page.content();
+
+			const data: any = [];
+
+			const $ = cheerio.load(html);
+			$('.banggia-co-ban-body tbody tr').each(function () {
+				console.log(this)
+				const symbol = $(this).attr('id');
+				console.log(symbol)
+			})
+
+		} catch (e) {
+			throw new CatchException(e)
+		}
+
+
 	}
 }
